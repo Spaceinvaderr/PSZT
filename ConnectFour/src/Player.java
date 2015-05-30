@@ -10,4 +10,5 @@ public abstract class Player {
 			symbol_opp = 'X';
 	}
 	public abstract Board makeMove(Board board, ObjectCounter ctr);
+	public abstract Board makeB(Board board, ObjectCounter ctr, int col);
 }

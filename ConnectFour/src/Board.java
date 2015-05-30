@@ -1,13 +1,12 @@
 
+
 public class Board implements Cloneable {
 	
 	char [][] cells;
 	int height;
 	int width;
 	
-	/**
-	 * Initialize a 7x7 board
-	 */
+	
 	public Board() {
 		cells = new char[6][9];
 		height = 6;
@@ -17,9 +16,11 @@ public class Board implements Cloneable {
 				cells[i][j] = '.';
 			}
 		}
+	
 	}
 	/**
-	 * Initialize a height x 6 board
+	 * Initialize a height  board
+	 * @param height number of rows in the board
 	 */
 	public Board(int height) {
 		cells = new char[height][9];
@@ -42,7 +43,11 @@ public class Board implements Cloneable {
 		this.height = height;
 		this.width = width;
 	}
-	
+	/**
+	 * Check to see if a symbol can be dropped in the specified column
+	 * @param column column in which to drop
+	 * @return true if symbol can be dropped in the column
+	 */
 	public boolean checkDropValidity(int column) {
 		if (column > 8 || column < 0) {
 			return false;			
@@ -53,7 +58,12 @@ public class Board implements Cloneable {
 		return true;
 	}
 	
-	
+	/**
+	 * Drops a symbol in the specified column
+	 * @param symbol symbol/disk to be dropped
+	 * @param column column in which to be dropped
+	 * @return true if symbol was successfully dropped
+	 */
 	public boolean dropDisk(char symbol, int column) {
 		if (!checkDropValidity(column)) {
 			return false;
@@ -65,6 +75,7 @@ public class Board implements Cloneable {
 		cells[i][column] = symbol;
 		return true;
 	}
+	
 	/**
 	 * Print the current board
 	 */
@@ -88,7 +99,11 @@ public class Board implements Cloneable {
 		System.out.println();
 	}
 	
-	
+	/**
+	 * Check if the board is in a state where one player has won
+	 * @param symbol symbol for whom to check victory
+	 * @return true if 'symbol' has won
+	 */
 	public boolean isWon(char symbol) {
 		// check row-wise
 		for (int i=0; i < height; i++) {
@@ -139,7 +154,15 @@ public class Board implements Cloneable {
 		return false;
 	}
 	
-	
+	/**
+	 * Return a count of the number of rows,columns and diagonals where there are 
+	 * n symbols within 4 positions. The n symbols should not be separated by an
+	 * opponent symbol but can be separated by empty spaces
+	 * @param symbol symbol to check
+	 * @param opponent_symbol opponent symbol
+	 * @param n number of symbols that should exist in the 4 position space
+	 * @return number of such rows, columns and diagonals
+	 */
 	public int nInARow(char symbol, char opponent_symbol, int n) {
 		int count = 0;	
 		// check row-wise
@@ -257,7 +280,12 @@ public class Board implements Cloneable {
 		return count;
 	}	
 	
-	
+	/**
+	 * Set a value in the board
+	 * @param i row
+	 * @param j column
+	 * @param c value
+	 */
 	public void setValue(int i, int j, char c) {
 		cells[i][j] = c;	
 	}
@@ -267,13 +295,15 @@ public class Board implements Cloneable {
 	    try {
 			return (Board)super.clone();
 		} catch (CloneNotSupportedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		return null;
 	}
 	
-	
+	/**
+	 * Copy the entire board and return a copy
+	 * @return copied board
+	 */
 	public Board copy() {
 		char [][] newcells = new char[height][width];
 		for (int i = 0; i < height; i++) {
@@ -286,6 +316,8 @@ public class Board implements Cloneable {
 	}
 	
 	/** testing
+	 * 
+	 * @param args
 	 */
 	public static void main(String[] args) {
 		Board b = new Board(6);

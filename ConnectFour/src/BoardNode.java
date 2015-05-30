@@ -1,4 +1,9 @@
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.PrintStream;
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class BoardNode {
 	private Board board;
@@ -38,7 +43,11 @@ public class BoardNode {
 		ctr.increment();
 	}
 	
-
+	/**
+	 * Evaluates utility of the current board position for the computer
+	 * @param current_parent_evaluation current evaluation of parent node - used for pruning
+	 * @return utility of the current board node
+	 */
 	public int evaluate(int current_parent_evaluation) {
 		// winning state for computer
 		if (board.isWon(head_symbol)) {
@@ -50,6 +59,7 @@ public class BoardNode {
 		}
 		// maximum depth of tree
 		int threshold = 5;
+
 		// if we've reached the depth, do a heuristic evaluation
 		if (depth == threshold) {
 			return heuristicEvaluation();
@@ -62,28 +72,46 @@ public class BoardNode {
 		if (depth % 2 == 0) {
 			evaluation = Integer.MIN_VALUE;
 			for (BoardNode child : children) {
+				
 				int value = child.evaluate(evaluation);
 				if (value > evaluation) {
 					evaluation = value;
+					System.out.println("MAX_NODE: "+"Node cut: "+pruning_enabled +","+"Depht: "+depth+"Value: "+value);
+
+
 				} 
 				if (pruning_enabled && evaluation > current_parent_evaluation)
 					break;
 			}
+		    
+
+				
 		} else { // We're at a "Min" node in the min-max tree
 			evaluation = Integer.MAX_VALUE;
 			for (BoardNode child : children) {
 				int value = child.evaluate(evaluation);
 				if (value < evaluation) {
 					evaluation = value;
+					
+					System.out.println("MIN NODE: "+"Node cut: "+pruning_enabled +","+"Depht: "+depth+"Value: "+value);
+
 				}
 				if (pruning_enabled && evaluation < current_parent_evaluation)
 					break;
 			}
-		}		
+			
+		}	
 		return evaluation;
 	}
 	
-	
+	/**
+	 * The main idea for the heuristic functions was adapted from here:
+	 * https://www.cs.purdue.edu/homes/cs190m/fall08/projects/project4/#ai
+	 * Estimates the utility of the current position of the node
+	 * It is based on number of "three-in-a-row" and two-in-a-row" situations
+	 * for the computer and opponent
+	 * @return utility of current board configuration for the computer
+	 */
 	private int heuristicEvaluation() {
 		if (board.isWon(head_symbol)) {
 			return Integer.MAX_VALUE;
@@ -101,10 +129,13 @@ public class BoardNode {
 		return threepos+threeneg+twopos+twoneg;
 	}
 	
-	
+	/**
+	 * Get all possible board positions from current board position
+	 * @return children
+	 */
 	public ArrayList<BoardNode> getChildren() {
 		ArrayList<BoardNode> children = new ArrayList<BoardNode>();
-		for (int i = 0; i < 7; i++) {
+		for (int i = 0; i < 9; i++) {
 			if (board.checkDropValidity(i)) {
 				Board child = board.copy();
 				child.dropDisk(symbol_to_play, i);			
@@ -115,7 +146,10 @@ public class BoardNode {
 		return children;
 	}
 	
-	
+	/**
+	 * Returns the board for the node
+	 * @return
+	 */
 	public Board getBoard() {		
 		return board;
 	}
